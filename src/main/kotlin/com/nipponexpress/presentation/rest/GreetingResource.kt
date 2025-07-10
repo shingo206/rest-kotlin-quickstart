@@ -23,6 +23,4 @@ class GreetingResource(
     @Path("/bye/")
     @Produces(MediaType.TEXT_PLAIN)
     fun bye(@QueryParam("name") name: String) = greetingService.bye(name)
-
-
 }
