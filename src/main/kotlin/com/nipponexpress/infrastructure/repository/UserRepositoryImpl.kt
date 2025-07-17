@@ -10,17 +10,26 @@ import java.time.LocalDate
 
 /**
  * @project rest-kotlin-quickstart
- * @author 9000120000
+ * @author Shingo.Tamura
  * @version 1.0
  * @since 2025/07/10
  */
 @ApplicationScoped
 class UserRepositoryImpl : UserRepository, PanacheRepository<User> {
     override fun all(page: Page): Uni<List<User>> = findAll().page<User>(page).list()
+    override fun countByUserName(name: String): Uni<Long> =
+        count("name", name)
+
+    override fun countByEmail(email: String): Uni<Long> =
+        count("email", email)
 
     override fun findUserById(id: Long): Uni<User> = findById(id)
 
     override fun findByName(name: String): Uni<User> = find("name", name).firstResult()
+
+    override fun findNameContains(name: String): Uni<List<User>> =
+        find("name LIKE %$name%").list()
+
 
     override fun findByBirthDate(
         birthDate: LocalDate,
@@ -39,5 +48,5 @@ class UserRepositoryImpl : UserRepository, PanacheRepository<User> {
 
     override fun save(user: User): Uni<User> = persist(user).replaceWith { user }
 
-    override fun deleteById(id: Long): Uni<Boolean> = deleteById(id)
+    override fun deleteUserById(id: Long): Uni<Boolean> = deleteById(id)
 }

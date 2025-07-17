@@ -13,11 +13,14 @@ import java.time.LocalDate
  */
 interface UserRepository {
     fun all(page: Page): Uni<List<User>>
+    fun countByUserName(name: String): Uni<Long>
+    fun countByEmail(email: String): Uni<Long>
     fun findUserById(id: Long): Uni<User>
     fun findByName(name: String): Uni<User>
+    fun findNameContains(name: String): Uni<List<User>>
     fun findByBirthDate(birthDate: LocalDate, page: Page): Uni<List<User>>
     fun findByAgeGreaterThan(age: Int, page: Page): Uni<List<User>>
     fun findByAgeLessThan(age: Int, page: Page): Uni<List<User>>
     fun save(user: User): Uni<User>
-    fun deleteById(id: Long): Uni<Boolean>
+    fun deleteUserById(id: Long): Uni<Boolean>
 }
