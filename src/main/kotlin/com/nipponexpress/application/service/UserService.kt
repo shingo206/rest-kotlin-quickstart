@@ -57,4 +57,9 @@ class UserService(
                 .flatMap { emailCheck }
                 .flatMap { userRepository.save(userMapper.applyToModel(dto, existingUser)) }
         }
+
+    fun deleteUserById(id: Long): Uni<Boolean> = findUserById(id)
+        .flatMap {
+            userRepository.deleteUserById(id)
+        }
 }
