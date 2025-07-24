@@ -4,7 +4,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 data class User(
-    var id: Long = 0,
+    var id: Long? = 0,
 
     var name: String = "",
 

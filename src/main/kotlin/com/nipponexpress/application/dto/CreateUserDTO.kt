@@ -9,6 +9,6 @@ data class CreateUserDTO(
 
     val age: Int,
 
-    val birthDate: LocalDate,
+    val birthDate: LocalDate?,
 )
 
