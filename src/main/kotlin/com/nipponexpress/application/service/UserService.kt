@@ -5,7 +5,7 @@ import com.nipponexpress.application.dto.UpdateUserDTO
 import com.nipponexpress.application.exception.DuplicateEmailException
 import com.nipponexpress.application.exception.DuplicateUserNameException
 import com.nipponexpress.application.mapper.UserMapper
-import com.nipponexpress.domain.exception.UserDoesNotExistsExceptino
+import com.nipponexpress.domain.exception.UserDoesNotExistsException
 import com.nipponexpress.domain.model.User
 import com.nipponexpress.domain.repository.UserRepository
 import io.smallrye.mutiny.Uni
@@ -40,26 +40,27 @@ class UserService(
     }
 
     fun findUserById(id: Long): Uni<User> = userRepository.findUserById(id)
-        .onItem().ifNull().failWith(UserDoesNotExistsExceptino("user does not exists with id: $id"))
+        .onItem().ifNull().failWith(UserDoesNotExistsException("user does not exists with id: $id"))
 
 
-    fun updateUser(id: Long, dto: UpdateUserDTO): Uni<User> = findUserById(id)
-        .flatMap { existingUser ->
-            val usernameCheck = if (dto.name != null && dto.name != existingUser.name)
-                countUserByName(dto.name)
-            else Uni.createFrom().item(0L)
+    fun updateUser(id: Long, dto: UpdateUserDTO): Uni<User> =
+        findUserById(id)
+            .flatMap { existingUser ->
+                val checkUsernameUnique = if (dto.name != null && dto.name != existingUser.name)
+                    countUserByName(dto.name)
+                else Uni.createFrom().item(0L)
 
-            val emailCheck = if (dto.email != null && dto.email != existingUser.email)
-                countUserByEmail(dto.email)
-            else Uni.createFrom().item(0L)
+                val checkEmailUnique = if (dto.email != null && dto.email != existingUser.email)
+                    countUserByEmail(dto.email)
+                else Uni.createFrom().item(0L)
 
-            usernameCheck
-                .flatMap { emailCheck }
-                .flatMap { userRepository.save(userMapper.applyToModel(dto, existingUser)) }
-        }
+                checkUsernameUnique
+                    .flatMap { checkEmailUnique }
+                    .flatMap { userRepository.save(userMapper.applyToModel(dto, existingUser)) }
+            }
 
-    fun deleteUserById(id: Long): Uni<Boolean> = findUserById(id)
-        .flatMap {
+    fun deleteUserById(id: Long): Uni<Boolean> =
+        findUserById(id).flatMap {
             userRepository.deleteUserById(id)
         }
 }

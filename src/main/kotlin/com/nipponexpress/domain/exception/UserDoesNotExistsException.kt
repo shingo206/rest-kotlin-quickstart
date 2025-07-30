@@ -8,5 +8,4 @@ import jakarta.ws.rs.NotFoundException
  * @version 1.0
  * @since 2025/07/17
  */
-class UserDoesNotExistsExceptino(message: String) : NotFoundException(message) {
-}
+class UserDoesNotExistsException(message: String) : NotFoundException(message)

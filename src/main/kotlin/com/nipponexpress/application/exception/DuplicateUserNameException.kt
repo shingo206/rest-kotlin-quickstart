@@ -6,5 +6,4 @@ package com.nipponexpress.application.exception
  * @version 1.0
  * @since 2025/07/17
  */
-class DuplicateUserNameException(message: String) : RuntimeException(message) {
-}
+class DuplicateUserNameException(message: String) : RuntimeException(message)

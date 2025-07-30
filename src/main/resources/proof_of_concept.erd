@@ -1,0 +1,198 @@
+currencies [icon: currency, color: blue] {
+  id number pk
+  name string
+  code string
+  created_at timestamp
+  updated_at timestamp
+}
+
+countries [icon: flag, color: blue] {
+  id number pk
+  name string
+  code string unique
+  currency_id Object_id currencies
+  created_at timestamp
+  updated_at timestamp
+}
+
+states [icon: map] {
+  id number pk
+  code string
+  country_id Object_id countries
+  created_at timestamp
+  updated_at timestamp
+}
+
+cities [icon: map] {
+  id number pk
+  code string
+  country_id Object_id countries
+  state_id Object_id states
+  created_at timestamp
+  updated_at timestamp
+}
+
+companies [icon: factory, color: green] {
+  id number pk
+  code string
+  address_id Object_id addresses
+  created_at timestamp
+  updated_at timestamp
+}
+
+branches [icon:factory, color: green] {
+  id number pk
+  company_id Object_id companies
+  code string
+  address_id Object_id addresses
+  created_at timestamp
+  updated_at timestamp
+}
+
+divisions [icon:factory, color: green] {
+  id number pk
+  branch_id Object_id branches
+  code string
+  address_id Object_id addresses
+  created_at timestamp
+  updated_at timestamp
+}
+
+warehouses [icon:warehouse, color: blue] {
+  id number pk
+  branch_id Object_id branches
+  code string
+  address_id Object_id addresses
+  created_at timestamp
+  updated_at timestamp
+}
+
+customers [icon:person, color: blue] {
+  id number pk
+  warehouse_id Object_id warehouses
+  code string
+  address_id Object_id addresses
+  created_at timestamp
+  updated_at timestamp
+}
+
+categories [icon:person, color: blue] {
+  id number pk
+  customer_id Object_id customers
+  code string
+  parentCategory_id Object_id categories
+  created_at timestamp
+  updated_at timestamp
+}
+
+products [icon:person, color: blue] {
+  id number pk
+  customer_id Object_id customers
+  code string
+  origin_id Object_id countries
+  category_id Object_id categories
+  created_at timestamp
+  updated_at timestamp
+}
+
+orders [icon:store, color: blue] {
+  id number pk
+  customer_id Object_id customers
+  order_number string
+  customer_reference_number string
+  planned_shipping_date date
+  consignee_id Object_id addresses
+  delivery_id Object_id addresses
+  created_at timestamp
+  updated_at timestamp
+}
+
+order_lines [icon:store, color: blue] {
+  id number pk
+  order_id Object_id orders
+  sequence_number number
+  product_id Object_id addresses
+  quantity number
+
+  purchase_order_number string
+  invoice_number string
+  lot_number string
+  plant_code string
+  storageLocation_code string
+  customer_allocation_code string
+
+  effective_date date
+  expire_date date
+  production_date date
+
+  created_at timestamp
+  updated_at timestamp
+}
+
+stock_units [icon:info] {
+  id number pk
+  pallet_number string
+
+  purchase_order_number string
+  invoice_number string
+  lot_number string
+  plant_code string
+  storageLocation_code string
+  customer_allocation_code string
+
+  effective_date date
+  expire_date date
+  production_date date
+
+  available_quantity number
+  allocated_quantity number
+  picked_quantity number
+}
+
+addresses [icon: flag, color: green] {
+  id number pk
+  name string
+  department string
+  street string
+  street_2 string
+  country_id Object_id countries
+  state_id Object_id states
+  city_id Object_id cities
+  city_name
+  post_code string
+  attention string
+  email email
+  phone phone
+  fax fax
+  created_at timestamp
+  updated_at timestamp
+}
+
+currencies.id < countries.currency_id
+countries.id < states.country_id
+countries.id < addresses.country_id
+states.id < addresses.state_id
+cities.id < addresses.city_id
+
+states.id < cities.state_id
+countries.id < cities.country_id
+addresses.id - companies.address_id
+companies.id < branches.company_id
+addresses.id - branches.address_id
+branches.id < divisions.branch_id
+addresses.id - divisions.address_id
+branches.id < warehouses.branch_id
+addresses.id - warehouses.address_id
+warehouses.id < customers.warehouse_id
+addresses.id - warehouses.address_id
+customers.id < categories.customer_id
+customers.id < products.customer_id
+categories.id < products.category_id
+categories.parentCategory_id < categories.id
+
+customers.id < orders.customer_id
+addresses.id - orders.consignee_id
+addresses.id - orders.delivery_id
+
+orders.id < order_lines.order_id
+products.id < order_lines.product_id
