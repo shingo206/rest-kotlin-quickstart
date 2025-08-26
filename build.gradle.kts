@@ -1,10 +1,10 @@
 plugins {
-    kotlin("jvm") version "2.1.21"
-    kotlin("kapt") version "2.1.21"
-    kotlin("plugin.allopen") version "2.1.21"
-    kotlin("plugin.serialization") version "2.1.21"
+    kotlin("jvm") version "2.2.10"
+    kotlin("kapt") version "2.2.10"
+    kotlin("plugin.allopen") version "2.2.10"
+    kotlin("plugin.serialization") version "2.2.10"
     id("io.quarkus")
-    id("org.jetbrains.kotlin.plugin.jpa") version "2.1.21"
+    id("org.jetbrains.kotlin.plugin.jpa") version "2.2.10"
 }
 
 repositories {
@@ -77,12 +77,19 @@ kotlin {
 }
 // MapStruct compile option
 kapt {
+    correctErrorTypes = true // Helps with generated code referencing unknown types
+    keepJavacAnnotationProcessors = true // Ensures annotation processors are retained
+    useBuildCache = true // Speeds up builds by caching kapt outputs
+
     arguments {
         arg("mapstruct.suppressGeneratorTimestamp", "true")
         arg("mapstruct.suppressGeneratorVersionInfoComment", "true")
         arg("mapstruct.verbose", "true")
+        arg("mapstruct.defaultComponentModel", "cdi") // Optional: enforce CDI globally
+        arg("mapstruct.defaultInjectionStrategy", "constructor") // Optional: use constructor injection
     }
 }
+
 
 tasks.test {
     jvmArgs("-javaagent:${classpath.find { it.name.contains("byte-buddy-agent") }?.absolutePath}")

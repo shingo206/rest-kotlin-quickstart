@@ -5,6 +5,7 @@ import com.nipponexpress.application.dto.UpdateUserDTO
 import com.nipponexpress.application.service.UserService
 import com.nipponexpress.presentation.dto.ApiResponse
 import com.nipponexpress.presentation.dto.ResponseUserDTO
+import com.nipponexpress.presentation.exception.ReactiveExceptionMapper
 import com.nipponexpress.presentation.mapper.UserMapper
 import io.smallrye.mutiny.Uni
 import jakarta.ws.rs.*
@@ -23,7 +24,8 @@ import java.net.URI
 @Consumes(MediaType.APPLICATION_JSON)
 class UserResource(
     private val userService: UserService,
-    private val userMapper: UserMapper
+    private val userMapper: UserMapper,
+    private val exceptionMapper: ReactiveExceptionMapper
 ) {
     // Create
     @POST
@@ -41,6 +43,9 @@ class UserResource(
                     .created<ApiResponse<ResponseUserDTO>>(URI.create("/users/{user.id}"))
                     .entity(apiResponse)
                     .build()
+            }
+            .onFailure().recoverWithUni { throwable ->
+                exceptionMapper.handleException<ResponseUserDTO>(throwable)
             }
 
     // Read
@@ -61,6 +66,9 @@ class UserResource(
                     .entity(apiResponse)
                     .build()
             }
+            .onFailure().recoverWithUni { throwable ->
+                exceptionMapper.handleException<ResponseUserDTO>(throwable)
+            }
 
     // Update
     @PUT
@@ -80,12 +88,29 @@ class UserResource(
                     .entity(apiResponse)
                     .build()
             }
+            .onFailure().recoverWithUni { throwable ->
+                exceptionMapper.handleException<ResponseUserDTO>(throwable)
+            }
 
     // Delete
     @DELETE
     @Path("/{id}")
-    fun deleteUserById(@PathParam("id") id: Long): Uni<RestResponse<Boolean>> =
+    fun deleteUserById(@PathParam("id") id: Long): Uni<RestResponse<ApiResponse<Boolean>>> =
         userService.deleteUserById(id)
-            .map { RestResponse.noContent() }
+            .map {
+                val apiResponse = ApiResponse(
+                    statusCode = 204,
+                    success = true,
+                    message = "User has been deleted",
+                    data = true
+                )
+                RestResponse.ResponseBuilder
+                    .noContent<ApiResponse<Boolean>>()
+                    .entity(apiResponse)
+                    .build()
+            }
+            .onFailure().recoverWithUni { throwable ->
+                exceptionMapper.handleException<Boolean>(throwable)
+            }
 
 }

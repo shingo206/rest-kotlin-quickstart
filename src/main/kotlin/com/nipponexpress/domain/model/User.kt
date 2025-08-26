@@ -14,6 +14,8 @@ data class User(
 
     var birthDate: LocalDate = LocalDate.now(),
 
+    @get:JvmName("getIsActive")
+    @set:JvmName("setIsActive")
     var isActive: Boolean = false,
 
     var createdAt: LocalDateTime = LocalDateTime.now(),

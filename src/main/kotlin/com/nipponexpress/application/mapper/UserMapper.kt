@@ -29,6 +29,10 @@ interface UserMapper {
         user.createdAt = LocalDateTime.now()
     }
 
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "isActive", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     fun applyToModel(dto: UpdateUserDTO, @MappingTarget user: User): User
 
     @AfterMapping
