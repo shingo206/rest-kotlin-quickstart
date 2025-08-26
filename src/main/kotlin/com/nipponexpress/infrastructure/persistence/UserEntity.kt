@@ -15,12 +15,12 @@ import java.time.LocalDateTime
 @Table(name = "users")
 data class UserEntity(
     @Column(nullable = false, unique = true)
-    @NotBlank(message = "Name cannot be blank")
+    @field:NotBlank(message = "Name cannot be blank")
     @field:Size(min = 6, max = 50)
     var name: String,
 
     @Column(nullable = false, unique = true)
-    @NotBlank(message = "Name cannot be blank")
+    @field:NotBlank(message = "E-mail cannot be blank")
     @field:Size(min = 6, max = 100)
     var email: String,
 
@@ -33,7 +33,7 @@ data class UserEntity(
     var birthDate: LocalDate,
 
     @Column(nullable = false)
-    var isActive: Boolean = false,
+    var active: Boolean = false,
 
     @Column(nullable = false)
     var createdAt: LocalDateTime,
