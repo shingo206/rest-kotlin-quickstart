@@ -15,7 +15,7 @@ quarkus:
       username: user
       password: postgres
       reactive:
-        url: vertx-reactive:postgresql://localhost:5432/quarkus_dev
+        url: vertx-reactive:postgresql://localhost:5432/rest_dev
 
     hibernate-orm:
       schema-management:
@@ -29,7 +29,7 @@ quarkus:
       username: user
       password: postgres
       reactive:
-        url: vertx-reactive:postgresql://localhost:5432/quarkus_test
+        url: vertx-reactive:postgresql://localhost:5432/rest_test
 
     hibernate-orm:
       schema-management:
@@ -43,7 +43,7 @@ quarkus:
       username: user
       password: postgres
       reactive:
-        url: vertx-reactive:postgresql://localhost:5432/quarkus_prod
+        url: vertx-reactive:postgresql://localhost:5432/rest_prod
 
     hibernate-orm:
       schema-management:

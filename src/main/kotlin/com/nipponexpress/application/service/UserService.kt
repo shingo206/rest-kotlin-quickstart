@@ -8,6 +8,7 @@ import com.nipponexpress.application.mapper.UserMapper
 import com.nipponexpress.domain.exception.UserDoesNotExistsException
 import com.nipponexpress.domain.model.User
 import com.nipponexpress.domain.repository.UserRepository
+import io.quarkus.hibernate.reactive.panache.common.WithTransaction
 import io.smallrye.mutiny.Uni
 import jakarta.enterprise.context.ApplicationScoped
 
@@ -22,6 +23,7 @@ class UserService(
     private val userRepository: UserRepository,
     private val userMapper: UserMapper
 ) {
+    @WithTransaction
     fun createUser(dto: CreateUserDTO): Uni<User> =
         countUserByName(dto.name)
             .flatMap { countUserByEmail(dto.email) }
@@ -42,7 +44,7 @@ class UserService(
     fun findUserById(id: Long): Uni<User> = userRepository.findUserById(id)
         .onItem().ifNull().failWith(UserDoesNotExistsException("user does not exists with id: $id"))
 
-
+    @WithTransaction
     fun updateUser(id: Long, dto: UpdateUserDTO): Uni<User> =
         findUserById(id)
             .flatMap { existingUser ->
@@ -59,6 +61,7 @@ class UserService(
                     .flatMap { userRepository.save(userMapper.applyToModel(dto, existingUser)) }
             }
 
+    @WithTransaction
     fun deleteUserById(id: Long): Uni<Boolean> =
         findUserById(id).flatMap {
             userRepository.deleteUserById(id)
