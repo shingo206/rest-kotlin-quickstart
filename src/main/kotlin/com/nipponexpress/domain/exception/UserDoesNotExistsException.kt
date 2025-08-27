@@ -1,11 +1,11 @@
 package com.nipponexpress.domain.exception
 
-import jakarta.ws.rs.NotFoundException
-
 /**
  * @project rest-kotlin-quickstart
- * @author 9000120000
+ * @author Shingo
  * @version 1.0
  * @since 2025/07/17
  */
-class UserDoesNotExistsException(message: String) : NotFoundException(message)
+class UserDoesNotExistsException(message: String) : DomainException(message)
+
+abstract class DomainException(message: String) : RuntimeException(message)
