@@ -45,9 +45,14 @@ dependencies {
     annotationProcessor("org.mapstruct:mapstruct-processor:${mapstructVersion}")
     kapt("org.mapstruct:mapstruct-processor:${mapstructVersion}")
     // Test
+    testImplementation(kotlin("test"))
     testImplementation("io.quarkus:quarkus-junit5")
+    testImplementation("io.quarkus:quarkus-junit5-mockito")
+    testImplementation("io.quarkus:quarkus-test-vertx")
+    testImplementation("io.quarkus:quarkus-test-hibernate-reactive-panache")
     testImplementation("io.rest-assured:rest-assured")
-    testAnnotationProcessor("org.mapstruct:mapstruct-processor:${mapstructVersion}")
+    testImplementation("org.mockito:mockito-junit-jupiter")
+    testImplementation("org.mockito.kotlin:mockito-kotlin:5.4.0")
 }
 
 group = "org.acme"

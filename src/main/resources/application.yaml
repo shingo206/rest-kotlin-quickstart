@@ -7,15 +7,19 @@ quarkus:
     console:
       enable: true
 
+
+  devservices:
+    enabled: false
+
 "%dev":
   quarkus:
     datasource:
       db-kind: postgresql
       db-version: 14
-      username: user
-      password: postgres
+      username: ${POSTGRES_USER}
+      password: ${POSTGRES_PASSWORD}
       reactive:
-        url: vertx-reactive:postgresql://localhost:5432/rest_dev
+        url: vertx-reactive:postgresql://localhost:5432/${POSTGRES_DATABASE}
 
     hibernate-orm:
       schema-management:
@@ -26,10 +30,10 @@ quarkus:
     datasource:
       db-kind: postgresql
       db-version: 14
-      username: user
-      password: postgres
+      username: ${POSTGRES_USER}
+      password: ${POSTGRES_PASSWORD}
       reactive:
-        url: vertx-reactive:postgresql://localhost:5432/rest_test
+        url: vertx-reactive:postgresql://localhost:5432/${POSTGRES_DATABASE}
 
     hibernate-orm:
       schema-management:
@@ -40,10 +44,10 @@ quarkus:
     datasource:
       db-kind: postgresql
       db-version: 14
-      username: user
-      password: postgres
+      username: ${POSTGRES_USER}
+      password: ${POSTGRES_PASSWORD}
       reactive:
-        url: vertx-reactive:postgresql://localhost:5432/rest_prod
+        url: vertx-reactive:postgresql://localhost:5432/${POSTGRES_DATABASE}
 
     hibernate-orm:
       schema-management:
