@@ -7,15 +7,18 @@ quarkus:
     console:
       enable: true
 
-
   devservices:
     enabled: false
+
+  otel:
+    metrics:
+      enabled: false
 
 "%dev":
   quarkus:
     datasource:
       db-kind: postgresql
-      db-version: 14
+      db-version: 13.20.0
       username: ${POSTGRES_USER}
       password: ${POSTGRES_PASSWORD}
       reactive:
@@ -29,7 +32,7 @@ quarkus:
   quarkus:
     datasource:
       db-kind: postgresql
-      db-version: 14
+      db-version: 13.20.0
       username: ${POSTGRES_USER}
       password: ${POSTGRES_PASSWORD}
       reactive:
@@ -43,7 +46,7 @@ quarkus:
   quarkus:
     datasource:
       db-kind: postgresql
-      db-version: 14
+      db-version: 13.20.0
       username: ${POSTGRES_USER}
       password: ${POSTGRES_PASSWORD}
       reactive:
