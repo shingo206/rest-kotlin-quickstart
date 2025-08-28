@@ -45,8 +45,9 @@ class UserResource(
                     .build()
             }
             .onFailure().recoverWithUni { throwable ->
-                exceptionMapper.handleException<ResponseUserDTO>(throwable)
+                exceptionMapper.handleException(throwable)
             }
+
 
     // Read
     @GET
@@ -67,8 +68,9 @@ class UserResource(
                     .build()
             }
             .onFailure().recoverWithUni { throwable ->
-                exceptionMapper.handleException<ResponseUserDTO>(throwable)
+                exceptionMapper.handleException(throwable)
             }
+
 
     // Update
     @PUT
@@ -89,8 +91,9 @@ class UserResource(
                     .build()
             }
             .onFailure().recoverWithUni { throwable ->
-                exceptionMapper.handleException<ResponseUserDTO>(throwable)
+                exceptionMapper.handleException(throwable)
             }
+
 
     // Delete
     @DELETE
@@ -110,7 +113,8 @@ class UserResource(
                     .build()
             }
             .onFailure().recoverWithUni { throwable ->
-                exceptionMapper.handleException<Boolean>(throwable)
+                exceptionMapper.handleException(throwable)
             }
+
 
 }
