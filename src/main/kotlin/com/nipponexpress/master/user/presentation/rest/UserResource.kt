@@ -40,7 +40,7 @@ class UserResource(
                     data = responseUser
                 )
                 RestResponse.ResponseBuilder
-                    .created<ApiResponse<ResponseUserDTO>>(URI.create("/users/{user.id}"))
+                    .created<ApiResponse<ResponseUserDTO>>(URI.create("/users/${responseUser.id}"))
                     .entity(apiResponse)
                     .build()
             }

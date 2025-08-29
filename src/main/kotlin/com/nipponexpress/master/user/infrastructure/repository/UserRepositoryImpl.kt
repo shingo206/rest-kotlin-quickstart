@@ -68,8 +68,16 @@ class UserRepositoryImpl(
         .map(entityMapper::toModelList)
 
     override fun save(user: User): Uni<User> =
-        persist(entityMapper.toEntity(user))
-            .map(entityMapper::toModel)
+        if (user.id == null || user.id == 0L) {
+            val userEntity = entityMapper.toEntity(user)
+            persistAndFlush(userEntity).map(entityMapper::toModel)
+        } else {
+            findById(user.id!!)
+                .flatMap { existingEntity ->
+                    entityMapper.toApplyToModel(user, existingEntity)
+                    persistAndFlush(existingEntity).map(entityMapper::toModel)
+                }
+        }
 
 
     override fun deleteUserById(id: Long): Uni<Boolean> = deleteById(id)

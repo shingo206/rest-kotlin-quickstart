@@ -7,6 +7,7 @@ import com.nipponexpress.master.user.presentation.dto.ApiResponse
 import io.smallrye.mutiny.Uni
 import io.vertx.core.impl.logging.LoggerFactory
 import jakarta.enterprise.context.ApplicationScoped
+import jakarta.validation.ConstraintViolationException
 import org.jboss.resteasy.reactive.RestResponse
 
 /**
@@ -38,21 +39,57 @@ class ReactiveExceptionMapper {
                 throwable.message ?: "User not found"
             )
 
+            is ConstraintViolationException -> {
+                val violations = throwable.constraintViolations
+                val errorMessage = violations.joinToString(", ") { it.message }
+                Pair(
+                    RestResponse.Status.BAD_REQUEST,
+                    "Validation failed: $errorMessage"
+                )
+            }
+
             is IllegalArgumentException -> Pair(
                 RestResponse.Status.BAD_REQUEST,
                 throwable.message ?: "Invalid request"
             )
 
-            else -> Pair(RestResponse.Status.INTERNAL_SERVER_ERROR, throwable.message ?: "Internal Server Error")
+            else -> {
+                val exceptionMessage = throwable.message ?: ""
+
+                if (exceptionMessage.contains("ConstraintViolationException") ||
+                    exceptionMessage.contains("interpolatedMessage")) {
+
+                    // Extract validation message using regex
+                    val validationMessage = extractValidationMessage(exceptionMessage)
+                    Pair(RestResponse.Status.BAD_REQUEST, validationMessage)
+                } else {
+                    Pair(RestResponse.Status.INTERNAL_SERVER_ERROR, "Internal Server Error")
+                }
+            }
         }
         val apiResponse = ApiResponse<T>(
             statusCode = status.statusCode,
             success = false,
-            message = message,
-            data = null,
+            message = message
         )
         val restResponse = RestResponse.status(status, apiResponse)
 
         return Uni.createFrom().item(restResponse)
+    }
+
+    private fun extractValidationMessage(fullMessage: String): String {
+        val regex = Regex("interpolatedMessage='([^']+)'")
+        val matchResult = regex.find(fullMessage)
+
+        return if (matchResult != null) {
+            matchResult.groupValues[1]
+        } else {
+            val lines = fullMessage.split("\n")
+            val constraintLine = lines.find { it.contains("ConstraintViolationImpl") }
+            constraintLine?.let {
+                val messageRegex = Regex("message='([^']+)'")
+                messageRegex.find(it)?.groupValues?.get(1)
+            } ?: "Validation error"
+        }
     }
 }

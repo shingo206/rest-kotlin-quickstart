@@ -10,5 +10,5 @@ data class ApiResponse<T>(
     val statusCode: Int,
     val success: Boolean,
     val message: String,
-    val data: T?
+    val data: T? = null
 )

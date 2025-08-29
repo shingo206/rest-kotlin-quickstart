@@ -58,7 +58,9 @@ class UserService(
 
                 checkUsernameUnique
                     .flatMap { checkEmailUnique }
-                    .flatMap { userRepository.save(userMapper.applyToModel(dto, existingUser!!)) }
+                    .flatMap {
+                        userRepository.save(userMapper.applyToModel(dto, existingUser!!))
+                    }
             }
 
     @WithTransaction

@@ -18,7 +18,7 @@ quarkus:
   quarkus:
     datasource:
       db-kind: postgresql
-      db-version: 13.20.0
+      db-version: ${POSTGRES_VERSION}
       username: ${POSTGRES_USER}
       password: ${POSTGRES_PASSWORD}
       reactive:
@@ -26,13 +26,13 @@ quarkus:
 
     hibernate-orm:
       schema-management:
-        strategy: update
+        strategy: ${POSTGRES_STRATEGY}
 
 "%test":
   quarkus:
     datasource:
       db-kind: postgresql
-      db-version: 13.20.0
+      db-version: ${POSTGRES_VERSION}
       username: ${POSTGRES_USER}
       password: ${POSTGRES_PASSWORD}
       reactive:
@@ -40,13 +40,13 @@ quarkus:
 
     hibernate-orm:
       schema-management:
-        strategy: drop-and-create
+        strategy: ${POSTGRES_STRATEGY}
 
 "%prod":
   quarkus:
     datasource:
       db-kind: postgresql
-      db-version: 13.20.0
+      db-version: ${POSTGRES_VERSION}
       username: ${POSTGRES_USER}
       password: ${POSTGRES_PASSWORD}
       reactive:
@@ -54,4 +54,4 @@ quarkus:
 
     hibernate-orm:
       schema-management:
-        strategy: none
+        strategy: ${POSTGRES_STRATEGY}

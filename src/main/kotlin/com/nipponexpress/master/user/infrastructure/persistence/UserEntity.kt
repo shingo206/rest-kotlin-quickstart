@@ -25,8 +25,8 @@ data class UserEntity(
     var email: String,
 
     @Column(nullable = false)
-    @field:Min(16)
-    @field:Max(65)
+    @field:Min(16, message = "Age must be between 16 and 65")
+    @field:Max(65, message = "Age must be between 16 and 65")
     var age: Int = 0,
 
     @Column(nullable = false)

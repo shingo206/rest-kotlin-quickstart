@@ -18,25 +18,38 @@ import java.time.LocalDateTime
  */
 @Mapper(
     componentModel = "cdi",
-    // ✅ Global null handling strategies
     nullValueMappingStrategy = NullValueMappingStrategy.RETURN_NULL,
     nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE
 )
 interface UserEntityMapper {
+
+    /**
+     * Convert User to UserEntity (includes ID for existing entities)
+     */
+    @Mapping(target = "id", ignore = true)
     fun toEntity(user: User): UserEntity
     fun toEntityList(users: List<User>): List<UserEntity>
     fun toModel(entity: UserEntity): User
     fun toModelList(entities: List<UserEntity>): List<User>
 
+    /**
+     * Apply User data to existing entity (preserves ID and createdAt)
+     */
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     fun toApplyToModel(user: User, @MappingTarget entity: UserEntity): UserEntity
 
     @AfterMapping
-    fun setUpdatedAt(@MappingTarget entity: UserEntity, user: User) {
-        if (user.id != null && user.id != 0L) entity.updatedAt = LocalDateTime.now()
+    fun setTimestamps(@MappingTarget entity: UserEntity, user: User) {
+        val now = LocalDateTime.now()
+
+        if (user.id == null) entity.createdAt = now
+        entity.updatedAt = now
     }
 
+    /**
+     * Set user ID from entity after mapping
+     */
     @AfterMapping
     fun setUserIdFromEntity(entity: UserEntity, @MappingTarget user: User) {
         user.id = entity.id ?: 0L
